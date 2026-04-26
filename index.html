@@ -3,82 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ريالك | الإدارة المالية الاحترافية</title>
+    <title>ريالك | الميزانية الذكية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --gold: #c5a059; --bg: #05080a; --card: rgba(22, 27, 42, 0.7); --text: #e0e0e0; }
-        body { font-family: 'Tajawal', sans-serif; background: radial-gradient(circle at top, #161b2a, var(--bg)); color: var(--text); min-height: 100vh; margin: 0; padding: 20px; display: flex; justify-content: center; }
-        .app-container { max-width: 900px; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .app-container { grid-template-columns: 1fr; } }
+        :root { 
+            --gold: #c5a059; 
+            --gold-light: #e0c08d;
+            --bg: #080b12; 
+            --card: rgba(255, 255, 255, 0.03); 
+            --text: #ffffff; 
+        }
         
-        .card { background: var(--card); backdrop-filter: blur(10px); border-radius: 24px; padding: 30px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        h1 { font-weight: 700; color: var(--gold); margin-top: 0; font-size: 1.8rem; letter-spacing: 1px; }
-        
-        .input-group { margin-bottom: 25px; }
-        label { display: block; margin-bottom: 10px; font-weight: 500; opacity: 0.9; }
-        .main-input { width: 100%; background: rgba(0,0,0,0.3); border: 2px solid #2d3446; border-radius: 15px; padding: 15px; color: var(--gold); font-size: 1.5rem; text-align: center; transition: 0.3s; box-sizing: border-box;}
-        .main-input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 15px rgba(197, 160, 89, 0.3); }
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background: radial-gradient(circle at top right, #1a2235, #080b12); 
+            color: var(--text); 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+        }
 
-        .slider-section { margin-top: 20px; }
-        .control-row { margin-bottom: 15px; background: rgba(255,255,255,0.03); padding: 15px; border-radius: 15px; }
-        input[type="range"] { width: 100%; accent-color: var(--gold); }
-        .val-text { float: left; color: var(--gold); font-weight: bold; }
-
-        .chart-container { display: flex; flex-direction: column; align-items: center; justify-content: center; position: sticky; top: 20px; height: fit-content;}
-        canvas { max-width: 100% !important; }
+        .app-container { max-width: 1000px; width: 100%; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 25px; align-items: start; }
+        @media (max-width: 850px) { .app-container { grid-template-columns: 1fr; } }
         
-        .status-badge { display: inline-block; padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; margin-top: 10px; }
-        .safe { background: rgba(0, 255, 127, 0.1); color: #00ff7f; }
-        .danger { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; }
+        .card { 
+            background: var(--card); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 30px; 
+            padding: 35px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.6); 
+        }
+
+        h1 { font-weight: 700; color: var(--gold); text-align: center; margin-top: 0; font-size: 2.2rem; text-shadow: 0 0 15px rgba(197, 160, 89, 0.3); }
+        
+        .main-input { 
+            width: 100%; 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(197, 160, 89, 0.4); 
+            border-radius: 20px; 
+            padding: 20px; 
+            color: var(--gold); 
+            font-size: 1.8rem; 
+            text-align: center; 
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
+        }
+        .main-input:focus { border-color: var(--gold); outline: none; background: rgba(255,255,255,0.08); transform: scale(1.02); }
+
+        .control-row { 
+            margin-bottom: 25px; 
+            background: rgba(255,255,255,0.02); 
+            padding: 20px; 
+            border-radius: 22px; 
+            border: 1px solid rgba(255,255,255,0.03);
+            transition: 0.3s;
+        }
+        .control-row:hover { background: rgba(255,255,255,0.05); border-color: rgba(197, 160, 89, 0.2); }
+
+        /* تجميل أشرطة السحب (Sliders) */
+        input[type="range"] { 
+            width: 100%; 
+            height: 8px; 
+            border-radius: 10px; 
+            background: #1e293b; 
+            outline: none; 
+            -webkit-appearance: none; 
+            margin-top: 15px;
+        }
+        
+        /* شكل الدائرة في الشريط */
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; 
+            width: 22px; 
+            height: 22px; 
+            background: var(--gold); 
+            border-radius: 50%; 
+            cursor: pointer; 
+            box-shadow: 0 0 15px var(--gold);
+            transition: 0.2s;
+        }
+
+        .val-text { font-size: 1.2rem; font-weight: 700; color: var(--gold); }
+        
+        .chart-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .amount-display { font-size: 2rem; font-weight: 700; color: var(--gold); margin-top: 15px; }
+        
+        .status-pill { 
+            display: inline-block; 
+            padding: 8px 20px; 
+            border-radius: 50px; 
+            font-size: 0.9rem; 
+            margin-top: 15px; 
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
     <div class="card">
-        <h1>ريالك 💰</h1>
-        <div class="input-group">
-            <label>الراتب الشهري الرئيسي</label>
+        <h1>ريـالك 💰</h1>
+        <p style="text-align: center; opacity: 0.6; margin-bottom: 30px;">إدارة مالية ذكية لنمط حياة أفضل</p>
+        
+        <div style="margin-bottom: 35px;">
+            <label style="display: block; text-align: center; margin-bottom: 10px; opacity: 0.8;">الراتب الشهري المتوقع</label>
             <input type="number" id="salary" class="main-input" placeholder="0.00" oninput="updateAll()">
         </div>
 
-        <div class="slider-section">
-            <div class="control-row">
-                <label>🏠 الضروريات <span id="p1_v" class="val-text">50%</span></label>
-                <input type="range" id="p1" min="0" max="100" value="50" oninput="updateAll()">
+        <div class="control-row">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>🏠 الضروريات والثوابت</span>
+                <span id="p1_v" class="val-text">50%</span>
             </div>
-            <div class="control-row">
-                <label>📈 الادخار والاستثمار <span id="p2_v" class="val-text">20%</span></label>
-                <input type="range" id="p2" min="0" max="100" value="20" oninput="updateAll()">
-            </div>
-            <div class="control-row">
-                <label>☕ نمط الحياة والترفيه <span id="p3_v" class="val-text">30%</span></label>
-                <input type="range" id="p3" min="0" max="100" value="30" oninput="updateAll()">
-            </div>
+            <input type="range" id="p1" min="0" max="100" value="50" oninput="updateAll()">
         </div>
 
-        <div id="status" class="status-badge safe">الميزانية متزنة 100%</div>
+        <div class="control-row">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>📈 الادخار والاستثمار</span>
+                <span id="p2_v" class="val-text">20%</span>
+            </div>
+            <input type="range" id="p2" min="0" max="100" value="20" oninput="updateAll()">
+        </div>
+
+        <div class="control-row" style="margin-bottom: 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span>☕ الرفاهية والترفيه</span>
+                <span id="p3_v" class="val-text">30%</span>
+            </div>
+            <input type="range" id="p3" min="0" max="100" value="30" oninput="updateAll()">
+        </div>
     </div>
 
-    <div class="card chart-container">
+    <div class="card chart-card">
         <canvas id="myChart"></canvas>
-        <div style="margin-top: 20px; width: 100%;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                <span>المبلغ المتبقي:</span>
-                <span id="rem_val" style="color: var(--gold); font-weight: bold;">0 ر.س</span>
-            </div>
-        </div>
+        <div id="status" class="status-pill" style="background: rgba(197, 160, 89, 0.1); color: var(--gold);">المجموع: 100%</div>
+        <div class="amount-display" id="total_sum">0 ر.س</div>
+        <p style="opacity: 0.5; font-size: 0.8rem;">إجمالي المبلغ الموزع</p>
     </div>
 </div>
 
 <script>
     let myChart;
     
-    // تشغيل النظام عند تحميل الصفحة
     window.onload = function() {
         initChart();
-        loadSavedData();
+        loadData();
         updateAll();
     };
 
@@ -90,14 +165,17 @@
                 labels: ['ضروريات', 'ادخار', 'ترفيه'],
                 datasets: [{
                     data: [50, 20, 30],
-                    backgroundColor: ['#c5a059', '#1e293b', '#334155'],
+                    backgroundColor: ['#c5a059', '#1e293b', '#475569'],
+                    hoverBackgroundColor: ['#e0c08d', '#2d3e54', '#64748b'],
                     borderWidth: 0,
-                    hoverOffset: 20
+                    cutout: '80%'
                 }]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: true,
                 plugins: { legend: { display: false } },
-                cutout: '70%'
+                animation: { animateRotate: true, duration: 1000 }
             }
         });
     }
@@ -109,36 +187,32 @@
         const p3 = parseInt(document.getElementById('p3').value);
         const total = p1 + p2 + p3;
 
-        // تحديث النصوص
         document.getElementById('p1_v').innerText = p1 + "%";
         document.getElementById('p2_v').innerText = p2 + "%";
         document.getElementById('p3_v').innerText = p3 + "%";
 
-        // تحديث الحالة
         const status = document.getElementById('status');
-        status.innerText = `إجمالي التوزيع: ${total}%`;
-        status.className = total > 100 ? 'status-badge danger' : 'status-badge safe';
+        status.innerText = `المجموع: ${total}%`;
+        status.style.color = total > 100 ? '#ff4d4d' : 'var(--gold)';
+        status.style.background = total > 100 ? 'rgba(255,77,77,0.1)' : 'rgba(197, 160, 89, 0.1)';
 
-        // تحديث الرسم البياني
         myChart.data.datasets[0].data = [p1, p2, p3];
         myChart.update();
 
-        // حساب المبالغ
-        const rem = salary * (total/100);
-        document.getElementById('rem_val').innerText = Math.round(rem).toLocaleString() + " ر.س";
+        const distributed = (salary * total) / 100;
+        document.getElementById('total_sum').innerText = Math.round(distributed).toLocaleString() + " ر.س";
 
-        // حفظ البيانات تلقائياً (LocalStorage)
-        localStorage.setItem('ryalk_data', JSON.stringify({salary, p1, p2, p3}));
+        localStorage.setItem('ryalk_pro', JSON.stringify({salary, p1, p2, p3}));
     }
 
-    function loadSavedData() {
-        const saved = localStorage.getItem('ryalk_data');
+    function loadData() {
+        const saved = localStorage.getItem('ryalk_pro');
         if (saved) {
-            const data = JSON.parse(saved);
-            document.getElementById('salary').value = data.salary;
-            document.getElementById('p1').value = data.p1;
-            document.getElementById('p2').value = data.p2;
-            document.getElementById('p3').value = data.p3;
+            const d = JSON.parse(saved);
+            document.getElementById('salary').value = d.salary;
+            document.getElementById('p1').value = d.p1;
+            document.getElementById('p2').value = d.p2;
+            document.getElementById('p3').value = d.p3;
         }
     }
 </script>
